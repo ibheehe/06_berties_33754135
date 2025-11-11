@@ -12,16 +12,15 @@ router.get('/search-result', function (req, res, next) {
 });
 
 
-router.get('/list', function(req, res, next) {
-        let sqlquery = "SELECT * FROM books"; // query database to get all the books
-        // execute sql query
-        db.query(sqlquery, (err, result) => {
-            if (err) {
-                next(err)
-            }
-            res.send(result)
-         });
-    });
+router.get('/list', (req, res, next) => {
+    const sqlQuery = "SELECT * FROM books"; // Query to get all books
+
+    db.query(sqlQuery, (err, result) => {
+        if (err) return next(err); // Pass error to Express error handler
+
+        res.json(result); // Send result as JSON
+    });
+});
 
 
 // Export the router object so index.js can access it
