@@ -42,7 +42,7 @@ app.use('/users', usersRoutes)
 
 // Load the route handlers for /books
 const booksRoutes = require('./routes/books')
-app.use('/books', booksRoutes)
+app.use('/', booksRoutes)
 
 // Start the web app listening
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
