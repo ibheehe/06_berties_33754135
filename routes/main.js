@@ -11,6 +11,9 @@ router.get('/about',function(req, res, next){
     res.render('about.ejs')
 });
 
+router.get('/books/search', function(req, res, next){
+    res.render('search', { shopData: { shopName: "Bertie's Books" } });
+});
 
 
 router.post('/books/bookadded', function (req, res, next) {
@@ -26,6 +29,20 @@ router.post('/books/bookadded', function (req, res, next) {
     });
 });
 
+
+router.get('/books/search-result', function(req, res, next){
+    const keyword = req.query.keyword;
+
+    let sqlquery = "SELECT name, price FROM books WHERE name LIKE ?";
+    db.query(sqlquery, [`%${keyword}%`], (err, result) => {
+        if (err) return next(err);
+
+        res.render('search_result', { 
+            books: result,
+            keyword: keyword
+        });
+    });
+});
 
 
 

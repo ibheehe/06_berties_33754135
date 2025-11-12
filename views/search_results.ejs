@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Results for "<%= keyword %>"</title>
+  <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+<body>
+  <h1>Search Results for "<%= keyword %>"</h1>
+
+  <% if (books && books.length > 0) { %>
+    <ul>
+      <% books.forEach(book => { %>
+        <% 
+          // Handle both lowercase and uppercase price fields
+          const bookPrice = book.price !== undefined ? book.price : book.PRICE; 
+        %>
+        <li><strong><%= book.name %></strong>, £<%= bookPrice %></li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p>No books found matching your search.</p>
+  <% } %>
+
+  <p><a href="/books/search">Back to Search</a></p>
+</body>
+</html>

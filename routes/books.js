@@ -6,10 +6,56 @@ router.get('/search',function(req, res, next){
     res.render("search.ejs")
 });
 
-router.get('/search-result', function (req, res, next) {
-    //searching in the database
-    res.send("You searched for: " + req.query.keyword)
+// partial match search for search page
+router.get('/books/search-result', function(req, res, next) {
+    const keyword = req.query.keyword;
+
+    let sqlquery = "SELECT name, price FROM books WHERE name LIKE ?";
+    db.query(sqlquery, [`%${keyword}%`], (err, result) => {
+        if (err) return next(err);
+
+        res.render('search_result', { 
+            books: result,
+            keyword: keyword,
+            type: 'advanced'
+        });
+    });
 });
+
+
+
+
+
+
+
+// Search form
+router.get('/search', (req, res, next) => {
+    res.render("search", { shopData: { shopName: "Bertie's Books" } });
+});
+
+// Search results
+router.get('/search-result', (req, res, next) => {
+    const keyword = req.query.keyword;
+
+    let sqlquery = "SELECT name, price FROM books WHERE name LIKE ?";
+    db.query(sqlquery, [`%${keyword}%`], (err, result) => {
+        if (err) return next(err);
+
+        res.render('search_result', { 
+            books: result,
+            keyword: keyword
+        });
+    });
+});
+
+
+
+
+
+
+
+
+
 
 
 router.get('/list', function(req, res, next) {
