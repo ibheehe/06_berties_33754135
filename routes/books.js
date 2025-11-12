@@ -18,10 +18,16 @@ router.get('/list', function(req, res, next) {
         if (err) {
             next(err);
         }
-        console.log(result); // 👈 Add this line
         res.render("list.ejs", { availableBooks: result });
     });
 });
+
+
+// addbooks route
+router.get('/books/addbook', function(req, res, next) {
+    res.render('addbook'); // renders addbook.ejs
+});
+
 
 
 

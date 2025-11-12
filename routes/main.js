@@ -11,5 +11,23 @@ router.get('/about',function(req, res, next){
     res.render('about.ejs')
 });
 
+
+
+router.post('/books/bookadded', function (req, res, next) {
+    let sqlquery = "INSERT INTO books (name, price) VALUES (?,?)";
+    let newrecord = [req.body.name, req.body.price];
+
+    db.query(sqlquery, newrecord, (err, result) => {
+        if (err) {
+            next(err);
+        } else {
+            res.send('This book is added to the database, name: ' + req.body.name + ', price: ' + req.body.price);
+        }
+    });
+});
+
+
+
+
 // Export the router object so index.js can access it
 module.exports = router
