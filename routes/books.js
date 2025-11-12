@@ -56,7 +56,7 @@ router.get('/search-result', (req, res, next) => {
 
 
 
-
+// list
 
 router.get('/list', function(req, res, next) {
     let sqlquery = "SELECT * FROM books"; 
