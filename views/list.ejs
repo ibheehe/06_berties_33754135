@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to Bertie's Books</title>
+</head>
+<body>
+  <h1>Bertie's Books Shop</h1>
+  <h2>Here are the books that we sell:</h2>
+
+  <% if (availableBooks && availableBooks.length > 0) { %>
+    <ul>
+      <% availableBooks.forEach(book => { %>
+        <li><%= book.name %>, £<%= book.PRICE %></li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p>No books found.</p>
+  <% } %>
+</body>
+</html>
