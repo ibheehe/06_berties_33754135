@@ -11,7 +11,11 @@
   <% if (availableBooks && availableBooks.length > 0) { %>
     <ul>
       <% availableBooks.forEach(book => { %>
-        <li><%= book.name %>, £<%= book.PRICE %></li>
+        <% 
+          // use whichever property exists
+          const bookPrice = book.price !== undefined ? book.price : book.PRICE; 
+        %>
+        <li><%= book.name %>, £<%= bookPrice %></li>
       <% }) %>
     </ul>
   <% } else { %>
