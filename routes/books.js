@@ -87,11 +87,15 @@ router.get('/bargainbooks',function(req, res, next){
 });
 
 
-router.get('/audit',function(req, res, next){
-    res.render('audit.ejs')
+router.get('/audit', function(req, res, next) {
+    const sqlquery = "SELECT username, success, timestamp FROM login_audit ORDER BY timestamp DESC";
+
+    global.db.query(sqlquery, function(err, results) {
+        if (err) return next(err);
+
+        res.render('audit.ejs', { auditLogs: results });
+    });
 });
-
-
 
 
 router.get('/listusers', function(req, res, next) {

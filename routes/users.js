@@ -42,36 +42,34 @@ router.post('/registered', function (req, res, next) {
 
 
 router.post('/login', function(req, res, next) {
-
-    const username = req.body.username ? req.body.username.trim() : ""; // trim whitespace
+    const username = req.body.username;
     const password = req.body.password;
 
-    console.log("Username submitted:", username); // debug
-
-    //  Find the user in the database by username
-    const sqlquery = "SELECT * FROM users WHERE username = ?";
+    const sqlquery = "SELECT username, hashedPassword FROM users WHERE username = ?";
     global.db.query(sqlquery, [username], function(err, results) {
         if (err) return next(err);
 
-        console.log("Database results:", results); // debug
-
         if (results.length === 0) {
-            return res.send("No user found with that username.");
+            // No user found — log failed attempt
+            const insertAudit = "INSERT INTO login_audit (username, success) VALUES (?, ?)";
+            global.db.query(insertAudit, [username, false]);
+            
+            return res.send('Login failed: user not found');
         }
 
-        const user = results[0];
-        const hashedPassword = user.hashedPassword;
+        const hashedPassword = results[0].hashedPassword;
 
-        // Compare passwords
         bcrypt.compare(password, hashedPassword, function(err, result) {
             if (err) return next(err);
 
-            if (result === true) {
-                //succesfull login
-                res.render('loggedin.ejs', { user: user });
+            // Log success or failure
+            const insertAudit = "INSERT INTO login_audit (username, success) VALUES (?, ?)";
+            global.db.query(insertAudit, [username, result]);
+
+            if (result) {
+                res.render('loggedin.ejs', { message: 'Login successful' });
             } else {
-                // failed to login
-                res.send("Incorrect password. Try again.");
+                res.send('Login failed: incorrect password');
             }
         });
     });

@@ -1,3 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Audit</title>
+</head>
 <body>
-  <h1>Track your logins HERE!</h1>
-  <h2>logins:</h2>
+    <h1>Login Audit History</h1>
+
+    <table border="1" cellpadding="5" cellspacing="0">
+        <tr>
+            <th>Username</th>
+            <th>Success</th>
+            <th>Timestamp</th>
+        </tr>
+
+        <% auditLogs.forEach(function(log) { %>
+            <tr>
+                <td><%= log.username %></td>
+                <td><%= log.success ? 'Yes' : 'No' %></td>
+                <td><%= log.timestamp %></td>
+            </tr>
+        <% }) %>
+    </table>
+</body>
+</html>
