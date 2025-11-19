@@ -88,5 +88,19 @@ router.get('/bargainbooks',function(req, res, next){
 
 
 
+router.get('/listusers', function(req, res, next) {
+    const sqlquery = "SELECT id, username, firstName, lastName, email FROM users"; // no password
+
+    global.db.query(sqlquery, function(err, results) {
+        if (err) return next(err);
+
+        // Pass users to the template
+        res.render('listusers.ejs', { users: results });
+    });
+});
+
+
+
+
 // Export the router object so index.js can access it
 module.exports = router
