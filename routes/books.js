@@ -87,6 +87,12 @@ router.get('/bargainbooks',function(req, res, next){
 });
 
 
+router.get('/audit',function(req, res, next){
+    res.render('audit.ejs')
+});
+
+
+
 
 router.get('/listusers', function(req, res, next) {
     const sqlquery = "SELECT id, username, firstName, lastName, email FROM users"; // no password
