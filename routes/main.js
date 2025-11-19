@@ -15,6 +15,11 @@ router.get('/books/search', function(req, res, next){
     res.render('search', { shopData: { shopName: "Bertie's Books" } });
 });
 
+router.get('/login',function(req, res, next){
+    res.render('login.ejs')
+});
+
+
 
 router.post('/books/bookadded', function (req, res, next) {
     let sqlquery = "INSERT INTO books (name, price) VALUES (?,?)";
