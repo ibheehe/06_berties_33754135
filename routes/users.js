@@ -29,7 +29,7 @@ router.post('/registered', function (req, res, next) {
         global.db.query(sqlquery, values, function(err, result) {
             if (err) return next(err);
 
-            // 3️⃣ Send confirmation message
+            // Send confirmation message
             let message = `Hello ${firstName} ${lastName} you are now registered! We will send an email to you at ${email}. `;
             message += `Your password is: ${plainPassword} and your hashed password is: ${hashedPassword}`;
 
