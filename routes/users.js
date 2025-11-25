@@ -4,6 +4,18 @@ const saltRounds = 10;
 const express = require("express");
 const router = express.Router();
 
+
+
+const redirectLogin = (req, res, next) => {
+    if (!req.session.userId ) {
+      res.redirect('./login') // redirect to the login page
+    } else { 
+        next (); // move to the next middleware function
+    } 
+}
+
+
+
 // GET registration page
 router.get('/register', function (req, res, next) {
     res.render('register.ejs');
@@ -67,10 +79,14 @@ router.post('/login', function(req, res, next) {
             global.db.query(insertAudit, [username, result]);
 
             if (result) {
-                res.render('loggedin.ejs', { message: 'Login successful' });
-            } else {
-                res.send('Login failed: incorrect password');
-            }
+    // Store the user in the session
+    req.session.userId = req.body.username;
+
+    res.render('loggedin.ejs', { message: 'Login successful' });
+} else {
+    res.send('Login failed: incorrect password');
+}
+
         });
     });
 });

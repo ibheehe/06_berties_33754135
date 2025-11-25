@@ -2,6 +2,17 @@
 const express = require("express")
 const router = express.Router()
 
+
+
+const redirectLogin = (req, res, next) => {
+    if (!req.session.userId) {
+        return res.redirect('/login');
+    }
+    next();
+};
+
+
+
 router.get('/search',function(req, res, next){
     res.render("search.ejs")
 });
@@ -58,7 +69,7 @@ router.get('/search-result', (req, res, next) => {
 
 // list
 
-router.get('/list', function(req, res, next) {
+router.get('/list', redirectLogin, function(req, res, next) {
     let sqlquery = "SELECT * FROM books"; 
     db.query(sqlquery, (err, result) => {
         if (err) {
@@ -106,6 +117,20 @@ router.get('/listusers', function(req, res, next) {
 
         // Pass users to the template
         res.render('listusers.ejs', { users: results });
+    });
+});
+
+
+
+//logout
+
+router.get('/logout', redirectLogin, (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.redirect('/');
+        }
+        // Render the logout EJS page
+        res.render('logout'); 
     });
 });
 
