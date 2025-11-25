@@ -72,12 +72,11 @@ router.get('/search-result', (req, res, next) => {
 router.get('/list', redirectLogin, function(req, res, next) {
     let sqlquery = "SELECT * FROM books"; 
     db.query(sqlquery, (err, result) => {
-        if (err) {
-            next(err);
-        }
+        if (err) return next(err);
         res.render("list.ejs", { availableBooks: result });
     });
 });
+
 
 
 // addbooks route
