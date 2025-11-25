@@ -4,42 +4,43 @@ const saltRounds = 10;
 const express = require("express");
 const router = express.Router();
 
-// ---------------------
-// Middleware for login check
-// ---------------------
-const redirectLogin = (req, res, next) => {
-    if (!req.session.userId) {
-        return res.redirect('/login'); // redirect to your login page
-    }
-    next();
-};
 
-// ---------------------
+
+const redirectLogin = (req, res, next) => {
+    if (!req.session.userId ) {
+      res.redirect('./login') // redirect to the login page
+    } else { 
+        next (); // move to the next middleware function
+    } 
+}
+
+
 // GET registration page
-// ---------------------
-router.get('/register', (req, res) => {
+router.get('/register', function (req, res, next) {
     res.render('register.ejs');
 });
 
-// ---------------------
 // POST registration
-// ---------------------
-router.post('/registered', (req, res, next) => {
+router.post('/registered', function (req, res, next) {
+
     const username = req.body.username;
     const firstName = req.body.first; // matches 'firstName' in DB
     const lastName = req.body.last;   // matches 'lastName' in DB
     const email = req.body.email;
     const plainPassword = req.body.password;
 
-    bcrypt.hash(plainPassword, saltRounds, (err, hashedPassword) => {
+    // Hash the password
+    bcrypt.hash(plainPassword, saltRounds, function(err, hashedPassword) {
         if (err) return next(err);
 
+        // Insert into database
         const sqlquery = "INSERT INTO users (username, firstName, lastName, email, hashedPassword) VALUES (?, ?, ?, ?, ?)";
         const values = [username, firstName, lastName, email, hashedPassword];
 
-        global.db.query(sqlquery, values, (err, result) => {
+        global.db.query(sqlquery, values, function(err, result) {
             if (err) return next(err);
 
+            // Send confirmation message
             let message = `Hello ${firstName} ${lastName} you are now registered! We will send an email to you at ${email}. `;
             message += `Your password is: ${plainPassword} and your hashed password is: ${hashedPassword}`;
 
@@ -48,77 +49,52 @@ router.post('/registered', (req, res, next) => {
     });
 });
 
-// ---------------------
-// GET login page
-// ---------------------
-router.get('/login', (req, res) => {
-    res.render('login.ejs');
-});
 
-// ---------------------
-// POST login
-// ---------------------
-router.post('/login', (req, res, next) => {
+
+
+router.post('/login', function(req, res, next) {
     const username = req.body.username;
     const password = req.body.password;
 
     const sqlquery = "SELECT username, hashedPassword FROM users WHERE username = ?";
-    global.db.query(sqlquery, [username], (err, results) => {
+    global.db.query(sqlquery, [username], function(err, results) {
         if (err) return next(err);
 
         if (results.length === 0) {
-            global.db.query("INSERT INTO login_audit (username, success) VALUES (?, ?)", [username, false]);
+            // No user found — log failed attempt
+            const insertAudit = "INSERT INTO login_audit (username, success) VALUES (?, ?)";
+            global.db.query(insertAudit, [username, false]);
+            
             return res.send('Login failed: user not found');
         }
 
         const hashedPassword = results[0].hashedPassword;
 
-        bcrypt.compare(password, hashedPassword, (err, result) => {
+        bcrypt.compare(password, hashedPassword, function(err, result) {
             if (err) return next(err);
 
-            global.db.query("INSERT INTO login_audit (username, success) VALUES (?, ?)", [username, result]);
+            // Log success or failure
+            const insertAudit = "INSERT INTO login_audit (username, success) VALUES (?, ?)";
+            global.db.query(insertAudit, [username, result]);
 
             if (result) {
-                // Store the user in the session
-                req.session.userId = username;
-                res.render('loggedin.ejs', { message: 'Login successful' });
-            } else {
-                res.send('Login failed: incorrect password');
-            }
+    // Store the user in the session
+    req.session.userId = req.body.username;
+
+    res.render('loggedin.ejs', { message: 'Login successful' });
+} else {
+    res.send('Login failed: incorrect password');
+}
+
         });
     });
 });
 
-// ---------------------
-// Audit page (protected)
-// ---------------------
-router.get('/audit', redirectLogin, (req, res, next) => {
-    const sqlquery = "SELECT username, success, timestamp FROM login_audit ORDER BY timestamp DESC";
-    global.db.query(sqlquery, (err, results) => {
-        if (err) return next(err);
-        res.render('audit.ejs', { auditLogs: results });
-    });
-});
 
-// ---------------------
-// List users (protected)
-// ---------------------
-router.get('/listusers', redirectLogin, (req, res, next) => {
-    const sqlquery = "SELECT id, username, firstName, lastName, email FROM users"; // no password
-    global.db.query(sqlquery, (err, results) => {
-        if (err) return next(err);
-        res.render('listusers.ejs', { users: results });
-    });
-});
 
-// ---------------------
-// Logout (protected)
-// ---------------------
-router.get('/logout', redirectLogin, (req, res) => {
-    req.session.destroy(err => {
-        if (err) return res.redirect('/');
-        res.render('logout'); // render logout.ejs
-    });
-});
+
+
+
+
 
 module.exports = router;
