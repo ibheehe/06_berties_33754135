@@ -14,6 +14,7 @@ const redirectLogin = (req, res, next) => {
     }
 };
 
+//test to see if it still works
 
 
 // GET registration page
