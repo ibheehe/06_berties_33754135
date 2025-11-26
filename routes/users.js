@@ -112,15 +112,7 @@ router.get('/login',function(req, res, next){
 
 //logout
 
-router.get('/logout', redirectLogin, (req, res) => {
-    req.session.destroy(err => {
-        if (err) {
-            return res.redirect('/');
-        }
-        // Render the logout EJS page
-        res.render('logout'); 
-    });
-});
+
 
 router.get('/audit', redirectLogin, function(req, res, next) {
     const sqlquery = "SELECT username, success, timestamp FROM login_audit ORDER BY timestamp DESC";

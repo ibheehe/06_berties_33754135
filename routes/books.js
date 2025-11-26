@@ -109,6 +109,19 @@ router.get('/users/list', redirectLogin, function(req, res, next) {
 
 
 
+router.get('/logout', redirectLogin, (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.redirect('/');
+        }
+        // Render the logout EJS page
+        res.render('logout'); 
+    });
+});
+
+
+
+
 
 
 
