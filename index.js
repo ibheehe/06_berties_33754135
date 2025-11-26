@@ -20,8 +20,6 @@ app.use(session({
 }))
 
 
-//just for commit
-
 
 
 // Tell Express that we want to use EJS as the templating engine
