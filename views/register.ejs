@@ -18,7 +18,8 @@
       </div>
     <% } %>
 
-    <form method="POST" action="registered">
+   <form method="POST" action="/users/registered">
+
         <p>First name: <input id="first" type="text" name="first" value="<%= typeof first !== 'undefined' ? first : '' %>" /></p>
         <p>Last name: <input id="last" type="text" name="last" value="<%= typeof last !== 'undefined' ? last : '' %>" /></p>
         <p>Email: <input id="email" type="email" name="email" value="<%= typeof email !== 'undefined' ? email : '' %>" /></p>
