@@ -94,7 +94,7 @@ router.post('/login', function(req, res, next) {
 });
 
 //list users
-router.get('/listusers', redirectLogin, function(req, res, next) {
+router.get('/users/list', redirectLogin, function(req, res, next) {
     const sqlquery = "SELECT id, username, firstName, lastName, email FROM users"; // no password
 
     global.db.query(sqlquery, function(err, results) {
