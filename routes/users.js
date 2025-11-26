@@ -26,23 +26,33 @@ router.get('/register', function (req, res, next) {
 // POST registration with validation
 router.post('/registered', 
     [
-        check('email').isEmail().withMessage('Please enter a valid email'),
-        check('username').isLength({ min: 5, max: 20 }).withMessage('Username must be 5-20 characters')
+        check('email')
+            .isEmail()
+            .withMessage('Please enter a valid email'),
+
+        check('username')
+            .isLength({ min: 5, max: 20 })
+            .withMessage('Username must be 5-20 characters'),
+
+        check('password')
+            .isLength({ min: 8 })
+            .withMessage('Password must be at least 8 characters long')
     ], 
     function (req, res, next) {
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            // Validation errors
             return res.render('./register', { errors: errors.array() });
         }
 
         // SANITIZED fields
-        const username    = req.sanitize(req.body.username);
-        const firstName   = req.sanitize(req.body.first);
-        const lastName    = req.sanitize(req.body.last);
-        const email       = req.sanitize(req.body.email);
-        const plainPassword = req.sanitize(req.body.password);
+        const username  = req.sanitize(req.body.username);
+        const firstName = req.sanitize(req.body.first);
+        const lastName  = req.sanitize(req.body.last);
+        const email     = req.sanitize(req.body.email);
+
+        // NOT sanitized
+        const plainPassword = req.body.password;
 
         bcrypt.hash(plainPassword, saltRounds, function(err, hashedPassword) {
             if (err) return next(err);
@@ -52,7 +62,6 @@ router.post('/registered',
 
             global.db.query(sqlquery, values, function(err, result) {
                 if (err) {
-                    // Check if it's a duplicate email error
                     if (err.code === 'ER_DUP_ENTRY') {
                         return res.render('./register', { 
                             errors: [{ msg: 'This email is already registered' }] 
@@ -61,7 +70,6 @@ router.post('/registered',
                     return next(err);
                 }
 
-                // Success
                 let message = `Hello ${firstName} ${lastName}, you are now registered! `;
                 message += `We will send an email to you at ${email}.`;
                 res.send(message);
