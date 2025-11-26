@@ -7,12 +7,13 @@ const router = express.Router();
 
 
 const redirectLogin = (req, res, next) => {
-    if (!req.session.userId ) {
-      res.redirect('./login') // redirect to the login page
-    } else { 
-        next (); // move to the next middleware function
-    } 
-}
+    if (!req.session.userId) {
+        res.redirect('./login'); // relative redirect works if router is mounted at root
+    } else {
+        next();
+    }
+};
+
 
 
 // GET registration page
@@ -90,6 +91,19 @@ router.post('/login', function(req, res, next) {
         });
     });
 });
+
+//list users
+router.get('/listusers', redirectLogin, function(req, res, next) {
+    const sqlquery = "SELECT id, username, firstName, lastName, email FROM users"; // no password
+
+    global.db.query(sqlquery, function(err, results) {
+        if (err) return next(err);
+
+        // Pass users to the template
+        res.render('listusers.ejs', { users: results });
+    });
+});
+
 
 
 

@@ -6,7 +6,7 @@ const router = express.Router()
 
 const redirectLogin = (req, res, next) => {
     if (!req.session.userId) {
-        return res.redirect('/login');
+        return res.redirect('./login');
     }
     next();
 };
@@ -109,17 +109,6 @@ router.get('/audit', redirectLogin, function(req, res, next) {
 
 
 
-//list users
-router.get('/listusers', redirectLogin, function(req, res, next) {
-    const sqlquery = "SELECT id, username, firstName, lastName, email FROM users"; // no password
-
-    global.db.query(sqlquery, function(err, results) {
-        if (err) return next(err);
-
-        // Pass users to the template
-        res.render('listusers.ejs', { users: results });
-    });
-});
 
 
 //logout
