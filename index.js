@@ -8,6 +8,9 @@ var session = require ('express-session')
 const app = express()
 const port = 8000
 
+const expressSanitizer = require('express-sanitizer');
+app.use(expressSanitizer());
+
 
 // Create a session
 app.use(session({

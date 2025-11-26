@@ -37,11 +37,12 @@ router.post('/registered',
             return res.render('./register', { errors: errors.array() });
         }
 
-        const username = req.body.username;
-        const firstName = req.body.first;
-        const lastName = req.body.last;
-        const email = req.body.email;
-        const plainPassword = req.body.password;
+        // SANITIZED fields
+        const username    = req.sanitize(req.body.username);
+        const firstName   = req.sanitize(req.body.first);
+        const lastName    = req.sanitize(req.body.last);
+        const email       = req.sanitize(req.body.email);
+        const plainPassword = req.sanitize(req.body.password);
 
         bcrypt.hash(plainPassword, saltRounds, function(err, hashedPassword) {
             if (err) return next(err);
@@ -53,12 +54,11 @@ router.post('/registered',
                 if (err) {
                     // Check if it's a duplicate email error
                     if (err.code === 'ER_DUP_ENTRY') {
-                        // Render register page with error message
                         return res.render('./register', { 
                             errors: [{ msg: 'This email is already registered' }] 
                         });
                     }
-                    return next(err); // Other errors
+                    return next(err);
                 }
 
                 // Success
@@ -68,6 +68,7 @@ router.post('/registered',
             });
         });
 });
+
 
 
 
