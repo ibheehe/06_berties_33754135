@@ -83,7 +83,8 @@ router.post('/login', function(req, res, next) {
 
     res.render('loggedin.ejs', { message: 'Login successful' });
 } else {
-    res.send('Login failed: incorrect password');
+    return res.send('Login failed: incorrect password');
+
 }
 
         });
