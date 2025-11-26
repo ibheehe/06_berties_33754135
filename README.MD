@@ -58,3 +58,20 @@ Validation Implementation
 The login route checks if the username exists
 Passwords are compared using bcrypt.compare().
 Failed login attempts are logged in the database for audit purposes.
+
+
+
+**sanitization**
+
+Sanitization is the process of removing unsafe characters from user input to protect the website from:
+XSS attacks (Cross-Site Scripting)
+Malicious HTML or JavaScript injections
+Unexpected rendering issues in templates
+If any field is later displayed back to the user, it must be sanitized.
+In this project, sanitization is done using:
+req.sanitize(value)
+
+Without sanitization, a user could enter something like:
+**Henry script alert("Gothca!") script
+If this is shown on a page later, their code would run in someone else’s browser.
+Sanitization removes harmful characters so this becomes harmless text instead of running as JavaScript.
