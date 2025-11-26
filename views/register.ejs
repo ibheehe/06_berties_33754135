@@ -2,18 +2,30 @@
 <html>
   <head>
     <title>Register for <%=shopData.shopName%></title>
-    <link rel="stylesheet"  type="text/css" href="/main.css" />
+    <link rel="stylesheet" type="text/css" href="/main.css" />
   </head>
   <body>
     <h1>Register for <%=shopData.shopName%></h1>
+
+    <!-- Display errors -->
+    <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+      <div style="color: red;">
+        <ul>
+          <% errors.forEach(function(error) { %>
+            <li><%= error.msg %></li>
+          <% }) %>
+        </ul>
+      </div>
+    <% } %>
+
     <form method="POST" action="registered">
-        <p>First name: <input id="first" type="text" name="first" /></p>
-        <p>Last name: <input id="last" type="text" name="last" /></p>
-        <p>Email: <input id="email" type="email" name="email" /></p>
-        <input type="text" name="username" placeholder="Enter username" required>
-<input type="password" name="password" placeholder="Enter password" required>
+        <p>First name: <input id="first" type="text" name="first" value="<%= typeof first !== 'undefined' ? first : '' %>" /></p>
+        <p>Last name: <input id="last" type="text" name="last" value="<%= typeof last !== 'undefined' ? last : '' %>" /></p>
+        <p>Email: <input id="email" type="email" name="email" value="<%= typeof email !== 'undefined' ? email : '' %>" /></p>
+        <p>Username: <input type="text" name="username" placeholder="Enter username" value="<%= typeof username !== 'undefined' ? username : '' %>" required></p>
+        <p>Password: <input type="password" name="password" placeholder="Enter password" required></p>
 
         <input type="submit" value="Register" />
-      </form>
+    </form>
   </body>
 </html>
