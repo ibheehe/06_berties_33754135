@@ -93,17 +93,35 @@ router.post('/login', function(req, res, next) {
     });
 });
 
-//list users
-router.get('/listusers', redirectLogin, function(req, res, next) {
-    const sqlquery = "SELECT id, username, firstName, lastName, email FROM users"; // no password
+
+
+//login
+router.get('/login',function(req, res, next){
+    res.render('login.ejs')
+});
+
+//logout
+
+router.get('/logout', redirectLogin, (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.redirect('/');
+        }
+        // Render the logout EJS page
+        res.render('logout'); 
+    });
+});
+
+router.get('/audit', redirectLogin, function(req, res, next) {
+    const sqlquery = "SELECT username, success, timestamp FROM login_audit ORDER BY timestamp DESC";
 
     global.db.query(sqlquery, function(err, results) {
         if (err) return next(err);
 
-        // Pass users to the template
-        res.render('listusers.ejs', { users: results });
+        res.render('audit.ejs', { auditLogs: results });
     });
 });
+
 
 
 

@@ -86,9 +86,6 @@ router.get('/books/addbook', function(req, res, next) {
 
 
 
-router.get('/login',function(req, res, next){
-    res.render('login.ejs')
-});
 
 
 
@@ -97,31 +94,21 @@ router.get('/bargainbooks',function(req, res, next){
 });
 
 
-router.get('/audit', redirectLogin, function(req, res, next) {
-    const sqlquery = "SELECT username, success, timestamp FROM login_audit ORDER BY timestamp DESC";
+//list users
+router.get('/users/list', redirectLogin, function(req, res, next) {
+    const sqlquery = "SELECT id, username, firstName, lastName, email FROM users"; // no password
 
     global.db.query(sqlquery, function(err, results) {
         if (err) return next(err);
 
-        res.render('audit.ejs', { auditLogs: results });
+        // Pass users to the template
+        res.render('listusers.ejs', { users: results });
     });
 });
 
 
 
 
-
-//logout
-
-router.get('/logout', redirectLogin, (req, res) => {
-    req.session.destroy(err => {
-        if (err) {
-            return res.redirect('/');
-        }
-        // Render the logout EJS page
-        res.render('logout'); 
-    });
-});
 
 
 
