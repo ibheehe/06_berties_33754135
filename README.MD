@@ -31,3 +31,30 @@ for the /audit page a login redirect was added for security purposes so that onl
 To restrict pages to logged-in users only, we added a middleware function called redirectLogin.
 This checks if req.session.userId exists.
 If a user tries to access any of these pages while not logged in, they are automatically redirected to /login.
+
+
+extension task
+This project uses express-validator to validate user input on the login and registration pages. Validation ensures that data submitted by users meets specific rules before it is processed or stored in the database. This improves data integrity, security, and user experience.
+
+
+**Fields Validated**
+Username
+-Must not be empty.
+-Must be between 5–20 characters.
+-Must be unique in the database (duplicate usernames are not allowed).
+First Name / Last Name
+-Optional, but if provided, they can be stored in the database.
+Password
+-Must not be empty.
+-Stored securely in the database using bcrypt hashing.
+express-validator checks the submitted usernames.
+
+**Fields Validated**
+Username
+-Must exist in the database.
+Password
+-Must match the hashed password stored in the database.
+Validation Implementation
+The login route checks if the username exists
+Passwords are compared using bcrypt.compare().
+Failed login attempts are logged in the database for audit purposes.
