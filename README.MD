@@ -75,3 +75,9 @@ Without sanitization, a user could enter something like:
 **Henry script alert("Gothca!") script
 If this is shown on a page later, their code would run in someone else’s browser.
 Sanitization removes harmful characters so this becomes harmless text instead of running as JavaScript.
+
+
+**week 9**
+
+
+The Bertie’s Books API provides access to the books database, allowing users to retrieve, search, filter, and sort books in the DB. /api/books returns all books as a JSON file containing id, name, and PRICE. Users can filter results. If no parameters are provided, all books are returned. The API includes basic error handling, returning JSON error objects if a database query fails. All filtering and sorting are handled securely, and search is case-insensitive. The application provides a /weather route, where users can enter a city name to retrieve current weather information, including temperature, humidity, and wind, displayed in a user-friendly format.

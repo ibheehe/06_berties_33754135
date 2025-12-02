@@ -64,7 +64,13 @@ app.use('/', booksRoutes)
 
 
 const weatherRoutes = require('./routes/weather')  
-app.use('/weather', weatherRoutes)                 
+app.use('/weather', weatherRoutes)      
+
+
+
+const apiRoutes = require('./routes/api');
+app.use('/api', apiRoutes);
+
 
 
 // Start the web app listening
