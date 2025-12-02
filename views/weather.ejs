@@ -1,11 +1,74 @@
-<h1>Weather for <%= city %></h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather Search</title>
 
-<p>Temperature: <%= weather.main.temp %> °C</p>
-<p>Feels like: <%= weather.main.feels_like %> °C</p>
-<p>Condition: <%= weather.weather[0].description %></p>
-<p>Humidity: <%= weather.main.humidity %>%</p>
+    <style>
+        body {
+            background: #eef3f7;
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            text-align: center;
+        }
 
-<form method="GET" action="/weather">
-    <input type="text" name="city" placeholder="Enter city">
-    <button type="submit">Search</button>
-</form>
+        input {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #aaa;
+            width: 250px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #0066cc;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        .box {
+            background: white;
+            display: inline-block;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+            width: 400px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: left;
+        }
+
+        .error {
+            color: red;
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Weather Checker</h1>
+
+    <form action="/weather" method="POST">
+        <input type="text" name="city" placeholder="Enter city..." required>
+        <button type="submit">Search</button>
+    </form>
+
+    <% if(error) { %>
+        <div class="error"><%= error %></div>
+    <% } %>
+
+    <% if(weather) { %>
+        <div class="box">
+            <h2>Weather in <%= weather.city %></h2>
+            <p><b>Temperature:</b> <%= weather.temp %>°C</p>
+            <p><b>Humidity:</b> <%= weather.humidity %>%</p>
+            <p><b>Wind Speed:</b> <%= weather.wind %> m/s</p>
+            <p><b>Description:</b> <%= weather.description %></p>
+            <p><b>Cloudiness:</b> <%= weather.clouds %>%</p>
+        </div>
+    <% } %>
+
+</body>
+</html>

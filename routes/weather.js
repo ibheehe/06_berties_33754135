@@ -2,28 +2,62 @@ const express = require('express');
 const router = express.Router();
 const request = require('request');
 
-// Your API key
-const API_KEY = "66dddd52ac235b979378738be52e6f23";
+// Show weather form
+router.get('/', function(req, res) {
+    res.render('weather.ejs', { weather: null, error: null });
+});
 
-// GET /weather
-router.get('/', (req, res) => {
-    const city = req.query.city || "London";
+router.post('/', function(req, res, next) {
 
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${API_KEY}&units=metric`;
+    let city = req.body.city || "london";
 
-    request({ url, json: true }, (err, response, body) => {
+    let apiKey = '66dddd52ac235b979378738be52e6f23';  
+    let url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
+
+    request(url, function (err, response, body) {
+
         if (err) {
-            console.error(err);
-            return res.status(500).send("Error contacting weather API");
-        }
+            next(err);
+        } else {
 
-        if (body.cod !== 200) {
-            return res.status(500).send("Weather API error: " + body.message);
-        }
+          
+            //old code
 
-        // render weather.ejs
-        res.render('weather.ejs', { weather: body, city });
+            // res.send(body)
+
+            /*
+            var weather = JSON.parse(body)
+            var wmsg = 'It is '+ weather.main.temp + 
+                ' degrees in '+ weather.name +
+                '! <br> The humidity now is: ' + 
+                weather.main.humidity;
+            res.send (wmsg);
+            */
+
+        
+
+            let weatherData = JSON.parse(body);
+
+            if (weatherData.cod !== 200) {
+                return res.render('weather.ejs', { weather: null, error: "City not found." });
+            }
+
+            let output = {
+                city: weatherData.name,
+                temp: weatherData.main.temp,
+                humidity: weatherData.main.humidity,
+                wind: weatherData.wind.speed,
+                description: weatherData.weather[0].description,
+                clouds: weatherData.clouds.all
+            };
+
+            res.render('weather.ejs', {
+                weather: output,
+                error: null
+            });
+        }
     });
+
 });
 
 module.exports = router;
